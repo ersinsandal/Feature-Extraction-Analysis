@@ -1,0 +1,42 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Caching and virtual environments
+.venv/
+venv/
+ENV/
+env/
+.env
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# IDE and Editor configurations
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Operating System files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Large dataset raw dumps (downloaded on demand or loaded via torchvision/keras)
+# Fashion-MNIST and CIFAR-10 are loaded dynamically via tf.keras.datasets in data_loader.py
+data/raw/cifar10/
+data/raw/fashion_mnist/
+data/processed/
+
+# Presentation extraction temporary artifacts
+temp_slides/
+*.tmp
+*.pdf
+
