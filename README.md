@@ -186,9 +186,12 @@ Based on the Dalal & Triggs (2005) formulation, HOG captures local object appear
 - **Implementation:** `skimage.feature.hog` via `src/features.py -> extract_hog_features(images)`
 - **Dimensionality Calculation:**
   For an image of dimensions $H \times W$ with cell size $C=4$, block size $B=2$, and $K=9$ bins:
-  $$N_{\text{cells\_y}} = \left\lfloor\frac{H}{C}\right\rfloor, \quad N_{\text{cells\_x}} = \left\lfloor\frac{W}{C}\right\rfloor$$
-  $$N_{\text{blocks\_y}} = N_{\text{cells\_y}} - B + 1, \quad N_{\text{blocks\_x}} = N_{\text{cells\_x}} - B + 1$$
-  $$D_{\text{HOG}} = N_{\text{blocks\_y}} \times N_{\text{blocks\_x}} \times (B \times B) \times K$$
+
+  $$N_{\text{cells}, y} = \left\lfloor\frac{H}{C}\right\rfloor, \quad N_{\text{cells}, x} = \left\lfloor\frac{W}{C}\right\rfloor$$
+
+  $$N_{\text{blocks}, y} = N_{\text{cells}, y} - B + 1, \quad N_{\text{blocks}, x} = N_{\text{cells}, x} - B + 1$$
+
+  $$D_{\text{HOG}} = N_{\text{blocks}, y} \times N_{\text{blocks}, x} \times (B \times B) \times K$$
   - Fashion-MNIST ($28 \times 28$): $7 \times 7$ cells $\to 6 \times 6 = 36$ blocks $\to 36 \times 4 \times 9 = \mathbf{1,296}$
   - CIFAR-10 ($32 \times 32$): $8 \times 8$ cells $\to 7 \times 7 = 49$ blocks $\to 49 \times 4 \times 9 = \mathbf{1,764}$
   - KTH-TIPS ($128 \times 128$): $32 \times 32$ cells $\to 31 \times 31 = 961$ blocks $\to 961 \times 4 \times 9 = \mathbf{34,596}$
@@ -236,8 +239,8 @@ To overcome standard LBP's sensitivity to single-scale features and loss of glob
    Instead of computing a single global histogram across the entire image (which destroys spatial arrangement), the image is segmented into a **$4 \times 4$ spatial grid** (16 sub-regions). Density-normalized histograms are computed for each cell across the 3 scales.
 
 4. **Final Feature Dimensionality:**
-   $$D_{\text{MS-S-LBP}} = 16 \text{ spatial cells} \times (10 + 18 + 26) = 16 \times 54 = \mathbf{864}$$
-   This produces a **constant, highly compact 864-dimensional descriptor** regardless of input image resolution.
+   $$D_{\text{LBP}} = 16 \times (10 + 18 + 26) = 16 \times 54 = \mathbf{864}$$
+   This produces a **constant, highly compact 864-dimensional descriptor** (16 spatial cells $\times$ 54 bins) regardless of input image resolution.
 
 - **Implementation:** `skimage.feature.local_binary_pattern` via `src/features.py -> extract_lbp_features(images)`
 

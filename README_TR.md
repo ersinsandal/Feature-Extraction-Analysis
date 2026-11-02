@@ -105,7 +105,7 @@ Bilimsel geçerliliği garanti altına almak adına çalışma, **kontrollü de�
 
 #### Neden Sınıflandırıcı Olarak Lineer SVM Sabitlendi?
 Lineer SVM, öznitelik uzayında kesin doğru/düzlemlerle (hiperdüzlem) sınıf ayrımı yapar:
-$$\min_{\mathbf{w}, b, \boldsymbol{\xi}} \frac{1}{2} \|\mathbf{w}\|^2 + C \sum_{i=1}^{N} \xi_i \quad \text{koşul:} \quad y_i (\mathbf{w}^\top \mathbf{z}_i + b) \ge 1 - \xi_i, \quad \xi_i \ge 0$$
+$$\min_{\mathbf{w}, b, \boldsymbol{\xi}} \frac{1}{2} \|\mathbf{w}\|^2 + C \sum_{i=1}^{N} \xi_i \quad \text{s.t.} \quad y_i (\mathbf{w}^\top \mathbf{z}_i + b) \ge 1 - \xi_i, \quad \xi_i \ge 0$$
 
 Karar yüzeyi tamamen lineer olduğu için, sınıflandırıcının karmaşık non-lineer ilişkileri "uydurma" (overfit) veya öznitelik zayıflıklarını maskeleme kabiliyeti yoktur. Dolayısıyla elde edilen yüksek başarım, öznitelik çıkarıcının ($\Phi$) ham pikselleri **doğrusal olarak ayrılabilir bir uzaya başarıyla izdüşürdüğünün doğrudan kanıtıdır**. Bu sayede performans farkı yalnızca ve yalnızca öznitelik yöntemine atfedilebilir.
 
@@ -231,8 +231,8 @@ Standart LBP'nin tek ölçeğe bağımlı kalmasını engellemek ve global uzams
    Tüm görüntü üzerinden tek bir global histogram almak nesnelerin uzamsal konum bilgisini yok eder. Bu nedenle görüntü **$4 \times 4$ boyutunda 16 eşit alt bölgeye** ayrılır ve her bölgenin normalize histogramları sırayla uç uca eklenir.
 
 4. **Nihai Vektör Uzunluğu:**
-   $$D_{\text{MS-S-LBP}} = 16 \text{ alt bölge} \times (10 + 18 + 26) = 16 \times 54 = \mathbf{864}$$
-   Görüntü çözünürlüğü ne olursa olsun, **sabit, kompakt ve 864 boyutlu** yüksek ayrıştırıcılıkta bir öznitelik vektörü üretilir.
+   $$D_{\text{LBP}} = 16 \times (10 + 18 + 26) = 16 \times 54 = \mathbf{864}$$
+   Görüntü çözünürlüğü ne olursa olsun, **sabit, kompakt ve 864 boyutlu** (16 alt bölge $\times$ 54 bin) yüksek ayrıştırıcılıkta bir öznitelik vektörü üretilir.
 
 - **Kod Karşılığı:** `skimage.feature.local_binary_pattern` aracılığıyla `src/features.py -> extract_lbp_features(images)`
 
