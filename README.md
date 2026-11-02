@@ -83,7 +83,10 @@ To isolate the representational capacity of each feature extraction technique fr
 ### 2.1 The Core Scientific Question
 
 In visual pattern recognition:
-$$\mathbf{x} \in \mathbb{R}^{H \times W \times C} \xrightarrow{\quad \Phi(\cdot) \quad} \mathbf{z} \in \mathbb{R}^{D} \xrightarrow{\quad f_{\mathbf{w}}(\cdot) \quad} \hat{y} \in \{1, \dots, K\}$$
+
+$$
+\mathbf{x} \in \mathbb{R}^{H \times W \times C} \xrightarrow{\quad \Phi(\cdot) \quad} \mathbf{z} \in \mathbb{R}^{D} \xrightarrow{\quad f_{\mathbf{w}}(\cdot) \quad} \hat{y} \in \{1, \dots, K\}
+$$
 
 Where $\Phi(\cdot)$ denotes the feature extraction mapping and $f_{\mathbf{w}}(\cdot)$ denotes the decision function. 
 
@@ -104,18 +107,25 @@ To ensure strict scientific integrity, this study follows a **controlled variabl
 | **Dependent Variables** | Quantitative Metrics | Multiclass Accuracy, Macro Precision, Macro Recall, Macro F1, Confusion Matrices |
 
 #### Why Fix the Classifier to a Linear SVM?
+
 A Linear SVM defines hyperplanes in feature space:
-$$\min_{\mathbf{w}, b, \boldsymbol{\xi}} \frac{1}{2} \|\mathbf{w}\|^2 + C \sum_{i=1}^{N} \xi_i \quad \text{s.t.} \quad y_i (\mathbf{w}^\top \mathbf{z}_i + b) \ge 1 - \xi_i, \quad \xi_i \ge 0$$
+
+$$
+\min_{\mathbf{w}, b, \boldsymbol{\xi}} \frac{1}{2} \|\mathbf{w}\|^2 + C \sum_{i=1}^{N} \xi_i \quad \text{s.t.} \quad y_i (\mathbf{w}^\top \mathbf{z}_i + b) \ge 1 - \xi_i, \quad \xi_i \ge 0
+$$
 
 Because the decision surface is strictly linear, the classifier possesses **zero non-linear capacity**. Consequently, high classification accuracy directly proves that the feature transformation $\Phi(\mathbf{x})$ has successfully mapped input images into a linearly separable manifold. Any variance in performance is purely attributable to the discriminative capability of $\Phi(\cdot)$, eliminating classifier architecture as a confounding factor.
 
 ### 2.3 Why Not Convolutional Neural Networks (CNNs)?
 
 CNNs learn hierarchical representations jointly with the decision boundary via end-to-end backpropagation:
-$$\mathcal{L}_{\text{CNN}} = \mathcal{L}\Big(f_{\boldsymbol{\theta}_{\text{FC}}}\big(\Phi_{\boldsymbol{\theta}_{\text{conv}}}(\mathbf{x})\big), y\Big)$$
+
+$$
+\mathcal{L}_{\text{CNN}} = \mathcal{L}\left( f\left(\Phi(\mathbf{x})\right), y \right)
+$$
 
 In an end-to-end CNN:
-- Feature extraction $\boldsymbol{\theta}_{\text{conv}}$ is inextricably entangled with the classification head $\boldsymbol{\theta}_{\text{FC}}$, learning rate schedules, optimizer choice, data augmentations, and depth.
+- Feature extraction ($\Phi$) is inextricably entangled with the classification head ($f$), learning rate schedules, optimizer choice, data augmentations, and depth.
 - It is impossible to isolate whether superior performance stems from the inductive bias of convolutional filters, the classifier depth, or parameter count.
 - Handcrafted descriptors with a fixed linear classifier enable a clean, isolated study of explicit visual representations.
 
@@ -154,7 +164,10 @@ In an end-to-end CNN:
 ### 3.1 Baseline: Normalized Raw Pixel Representation
 
 The baseline method bypasses feature transformation and feeds normalized pixel intensities directly into the classifier:
-$$\mathbf{z}_{\text{raw}} = \text{vec}\left(\frac{\mathbf{I}}{255.0}\right) \in [0.0, 1.0]^D$$
+
+$$
+\mathbf{z}_{\text{raw}} = \text{vec}\left(\frac{\mathbf{I}}{255.0}\right) \in [0.0, 1.0]^D
+$$
 
 - **Implementation:** `src/features.py -> extract_raw_pixels(images)`
 - **Dimensionality:**
@@ -171,16 +184,19 @@ Based on the Dalal & Triggs (2005) formulation, HOG captures local object appear
 
 1. **Gradient Computation:**
    Horizontal and vertical gradients are computed via 1D derivative masks:
+
    $$I_x = I * [-1, 0, 1], \quad I_y = I * [-1, 0, 1]^\top$$
+
    Gradient magnitude $M(x, y)$ and unsigned orientation $\theta(x, y)$ are derived:
-   $$M(x, y) = \sqrt{I_x(x,y)^2 + I_y(x,y)^2}$$
-   $$\theta(x, y) = \arctan\left(\frac{I_y(x,y)}{I_x(x,y)}\right) \pmod{180^\circ}$$
+
+   $$M(x, y) = \sqrt{I_x(x,y)^2 + I_y(x,y)^2}, \quad \theta(x, y) = \arctan\left(\frac{I_y(x,y)}{I_x(x,y)}\right) \pmod{180^\circ}$$
 
 2. **Spatial & Orientation Binning:**
    The image is partitioned into small connected spatial cells of size `pixels_per_cell=(4, 4)`. Gradient orientations are accumulated into **9 histogram bins** spanning $[0^\circ, 180^\circ)$, weighted by gradient magnitude.
 
 3. **Block Contrast Normalization:**
    To account for illumination changes and shadowing, cells are grouped into spatially overlapping blocks of `cells_per_block=(2, 2)`. Histograms are normalized using **L2-Hys** (L2-norm followed by clipping at $0.2$ and re-normalizing):
+
    $$\mathbf{v}_{\text{norm}} = \frac{\mathbf{v}}{\sqrt{\|\mathbf{v}\|_2^2 + \epsilon^2}}$$
 
 - **Implementation:** `skimage.feature.hog` via `src/features.py -> extract_hog_features(images)`
@@ -192,6 +208,7 @@ Based on the Dalal & Triggs (2005) formulation, HOG captures local object appear
   $$N_{\text{blocks}, y} = N_{\text{cells}, y} - B + 1, \quad N_{\text{blocks}, x} = N_{\text{cells}, x} - B + 1$$
 
   $$D_{\text{HOG}} = N_{\text{blocks}, y} \times N_{\text{blocks}, x} \times (B \times B) \times K$$
+
   - Fashion-MNIST ($28 \times 28$): $7 \times 7$ cells $\to 6 \times 6 = 36$ blocks $\to 36 \times 4 \times 9 = \mathbf{1,296}$
   - CIFAR-10 ($32 \times 32$): $8 \times 8$ cells $\to 7 \times 7 = 49$ blocks $\to 49 \times 4 \times 9 = \mathbf{1,764}$
   - KTH-TIPS ($128 \times 128$): $32 \times 32$ cells $\to 31 \times 31 = 961$ blocks $\to 961 \times 4 \times 9 = \mathbf{34,596}$
@@ -201,7 +218,10 @@ Based on the Dalal & Triggs (2005) formulation, HOG captures local object appear
 ### 3.3 Multi-Scale Spatial Local Binary Patterns (MS-S-LBP)
 
 Standard Local Binary Pattern (LBP) encodes local texture micro-structure by thresholding a circular neighborhood of $P$ points at radius $R$ against the center pixel value $g_c$:
-$$\text{LBP}_{P, R}(x_c, y_c) = \sum_{p=0}^{P-1} s(g_p - g_c) 2^p, \quad s(z) = \begin{cases} 1, & z \ge 0 \\ 0, & z < 0 \end{cases}$$
+
+$$
+\text{LBP}_{P, R}(x_c, y_c) = \sum_{p=0}^{P-1} s(g_p - g_c) 2^p, \quad s(z) = \begin{cases} 1, & z \ge 0 \\ 0, & z < 0 \end{cases}
+$$
 
 To overcome standard LBP's sensitivity to single-scale features and loss of global spatial topology, this project designs and implements an advanced **Multi-Scale Spatial LBP (MS-S-LBP)**:
 
@@ -239,7 +259,9 @@ To overcome standard LBP's sensitivity to single-scale features and loss of glob
    Instead of computing a single global histogram across the entire image (which destroys spatial arrangement), the image is segmented into a **$4 \times 4$ spatial grid** (16 sub-regions). Density-normalized histograms are computed for each cell across the 3 scales.
 
 4. **Final Feature Dimensionality:**
+
    $$D_{\text{LBP}} = 16 \times (10 + 18 + 26) = 16 \times 54 = \mathbf{864}$$
+
    This produces a **constant, highly compact 864-dimensional descriptor** (16 spatial cells $\times$ 54 bins) regardless of input image resolution.
 
 - **Implementation:** `skimage.feature.local_binary_pattern` via `src/features.py -> extract_lbp_features(images)`
@@ -265,7 +287,9 @@ Three benchmark datasets were curated to test the descriptors against distinct v
 - Curated by Alex Krizhevsky, Vinod Nair, and Geoffrey Hinton.
 - Contains 10 categories: *airplane, automobile, bird, cat, deer, dog, frog, horse, ship, truck*.
 - Converted to grayscale via standard luminance weighting:
+
   $$Y = 0.299 \cdot R + 0.587 \cdot G + 0.114 \cdot B$$
+
 - Characterized by arbitrary camera angles, background clutter, scale shifts, and high intra-class variance.
 
 ### 4.3 KTH-TIPS (Texture-Centric)

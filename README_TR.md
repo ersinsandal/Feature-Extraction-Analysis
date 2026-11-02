@@ -83,7 +83,10 @@ Bilgisayarlı görmede (Computer Vision), yüksek boyutlu görsel verinin makine
 ### 2.1 Temel Bilimsel Soru
 
 Görsel örüntü tanıma süreçlerinde temel akış şu şekildedir:
-$$\mathbf{x} \in \mathbb{R}^{H \times W \times C} \xrightarrow{\quad \Phi(\cdot) \quad} \mathbf{z} \in \mathbb{R}^{D} \xrightarrow{\quad f_{\mathbf{w}}(\cdot) \quad} \hat{y} \in \{1, \dots, K\}$$
+
+$$
+\mathbf{x} \in \mathbb{R}^{H \times W \times C} \xrightarrow{\quad \Phi(\cdot) \quad} \mathbf{z} \in \mathbb{R}^{D} \xrightarrow{\quad f_{\mathbf{w}}(\cdot) \quad} \hat{y} \in \{1, \dots, K\}
+$$
 
 Burada $\Phi(\cdot)$ öznitelik çıkarım dönüşümünü, $f_{\mathbf{w}}(\cdot)$ ise karar fonksiyonunu temsil eder.
 
@@ -104,18 +107,25 @@ Bilimsel geçerliliği garanti altına almak adına çalışma, **kontrollü de�
 | **Bağımlı Değişkenler** | Sayısal Başarım Metrikleri | Doğruluk, Makro Kesinlik, Makro Duyarlılık, Makro F1, Hata Matrisi |
 
 #### Neden Sınıflandırıcı Olarak Lineer SVM Sabitlendi?
+
 Lineer SVM, öznitelik uzayında kesin doğru/düzlemlerle (hiperdüzlem) sınıf ayrımı yapar:
-$$\min_{\mathbf{w}, b, \boldsymbol{\xi}} \frac{1}{2} \|\mathbf{w}\|^2 + C \sum_{i=1}^{N} \xi_i \quad \text{s.t.} \quad y_i (\mathbf{w}^\top \mathbf{z}_i + b) \ge 1 - \xi_i, \quad \xi_i \ge 0$$
+
+$$
+\min_{\mathbf{w}, b, \boldsymbol{\xi}} \frac{1}{2} \|\mathbf{w}\|^2 + C \sum_{i=1}^{N} \xi_i \quad \text{s.t.} \quad y_i (\mathbf{w}^\top \mathbf{z}_i + b) \ge 1 - \xi_i, \quad \xi_i \ge 0
+$$
 
 Karar yüzeyi tamamen lineer olduğu için, sınıflandırıcının karmaşık non-lineer ilişkileri "uydurma" (overfit) veya öznitelik zayıflıklarını maskeleme kabiliyeti yoktur. Dolayısıyla elde edilen yüksek başarım, öznitelik çıkarıcının ($\Phi$) ham pikselleri **doğrusal olarak ayrılabilir bir uzaya başarıyla izdüşürdüğünün doğrudan kanıtıdır**. Bu sayede performans farkı yalnızca ve yalnızca öznitelik yöntemine atfedilebilir.
 
 ### 2.3 Neden Evrişimli Sinir Ağları (CNN) Kullanılmadı?
 
 Evrişimli Sinir Ağları (CNN), öznitelik çıkarımı ile sınıflandırma katmanlarını uçtan uca (end-to-end) birleşik bir optimizasyonla öğrenir:
-$$\mathcal{L}_{\text{CNN}} = \mathcal{L}\Big(f_{\boldsymbol{\theta}_{\text{FC}}}\big(\Phi_{\boldsymbol{\theta}_{\text{conv}}}(\mathbf{x})\big), y\Big)$$
+
+$$
+\mathcal{L}_{\text{CNN}} = \mathcal{L}\left( f\left(\Phi(\mathbf{x})\right), y \right)
+$$
 
 Bu yaklaşımda:
-- Öznitelik çıkarımı $\boldsymbol{\theta}_{\text{conv}}$, sınıflandırma katmanı $\boldsymbol{\theta}_{\text{FC}}$, öğrenme oranı, optimizasyon algoritması ve veri artırma (augmentation) parametreleriyle iç içe geçer.
+- Öznitelik çıkarımı ($\Phi$), sınıflandırma katmanı ($f$), öğrenme oranı, optimizasyon algoritması ve veri artırma (augmentation) parametreleriyle iç içe geçer.
 - Başarının evrişim filtrelerinin matematiksel yapısından mı, ağın derinliğinden mi yoksa parametre sayısından mı kaynaklandığını izole etmek imkansızdır.
 - Klasik operatörler ve sabit lineer sınıflandırıcı, öznitelik kalitesini hiçbir harici faktörün gölgesinde bırakmadan saf biçimde ölçmeyi mümkün kılar.
 
@@ -154,7 +164,10 @@ Bu yaklaşımda:
 ### 3.1 Referans Noktası: Normalize Ham Piksel Temsili (Raw Pixels)
 
 Görüntü üzerindeki piksel yoğunluk değerlerinin hiçbir filtreye tabi tutulmadan düzleştirilip $[0.0, 1.0]$ aralığına normalize edilmesiyle elde edilir:
-$$\mathbf{z}_{\text{raw}} = \text{vec}\left(\frac{\mathbf{I}}{255.0}\right) \in [0.0, 1.0]^D$$
+
+$$
+\mathbf{z}_{\text{raw}} = \text{vec}\left(\frac{\mathbf{I}}{255.0}\right) \in [0.0, 1.0]^D
+$$
 
 - **Kod Karşılığı:** `src/features.py -> extract_raw_pixels(images)`
 - **Oluşan Boyutlar:**
@@ -171,8 +184,11 @@ Dalal & Triggs (2005) tarafından geliştirilen HOG yöntemi, nesne kenarların�
 
 1. **Gradyan Hesabı:**
    Görüntünün yatay ve dikey türevleri 1B türev maskeleriyle alınır:
+
    $$I_x = I * [-1, 0, 1], \quad I_y = I * [-1, 0, 1]^\top$$
+
    Gradyan büyüklüğü $M(x, y)$ ve yönsüz açı değeri $\theta(x, y)$ hesaplanır:
+
    $$M(x, y) = \sqrt{I_x(x,y)^2 + I_y(x,y)^2}, \quad \theta(x, y) = \arctan\left(\frac{I_y(x,y)}{I_x(x,y)}\right) \pmod{180^\circ}$$
 
 2. **Hücre ve Yön Kümeleri (Binning):**
@@ -180,6 +196,7 @@ Dalal & Triggs (2005) tarafından geliştirilen HOG yöntemi, nesne kenarların�
 
 3. **Blok Kontrast Normalizasyonu:**
    Aydınlatma ve gölge etkilerini gidermek için hücreler `cells_per_block=(2, 2)` boyutunda çakışan bloklarda birleştirilir ve **L2-Hys** yöntemiyle normalleştirilir:
+
    $$\mathbf{v}_{\text{norm}} = \frac{\mathbf{v}}{\sqrt{\|\mathbf{v}\|_2^2 + \epsilon^2}}$$
 
 - **Kod Karşılığı:** `skimage.feature.hog` aracılığıyla `src/features.py -> extract_hog_features(images)`
@@ -193,7 +210,10 @@ Dalal & Triggs (2005) tarafından geliştirilen HOG yöntemi, nesne kenarların�
 ### 3.3 Çok Ölçekli Mekansal Yerel İkili Örüntüler (Multi-Scale Spatial LBP)
 
 Standart LBP (Ojala vd.), merkez piksel ile yarıçap $R$ üzerindeki $P$ adet dairesel komşu arasındaki parlaklık farklarını ikili (binary) bir koda dönüştürür:
-$$\text{LBP}_{P, R}(x_c, y_c) = \sum_{p=0}^{P-1} s(g_p - g_c) 2^p, \quad s(z) = \begin{cases} 1, & z \ge 0 \\ 0, & z < 0 \end{cases}$$
+
+$$
+\text{LBP}_{P, R}(x_c, y_c) = \sum_{p=0}^{P-1} s(g_p - g_c) 2^p, \quad s(z) = \begin{cases} 1, & z \ge 0 \\ 0, & z < 0 \end{cases}
+$$
 
 Standart LBP'nin tek ölçeğe bağımlı kalmasını engellemek ve global uzamsal yerleşimi kaybetmemek adına bu projede özgün bir **Çok Ölçekli Mekansal LBP (Multi-Scale Spatial LBP)** mimarisi kurgulanmıştır:
 
@@ -231,7 +251,9 @@ Standart LBP'nin tek ölçeğe bağımlı kalmasını engellemek ve global uzams
    Tüm görüntü üzerinden tek bir global histogram almak nesnelerin uzamsal konum bilgisini yok eder. Bu nedenle görüntü **$4 \times 4$ boyutunda 16 eşit alt bölgeye** ayrılır ve her bölgenin normalize histogramları sırayla uç uca eklenir.
 
 4. **Nihai Vektör Uzunluğu:**
+
    $$D_{\text{LBP}} = 16 \times (10 + 18 + 26) = 16 \times 54 = \mathbf{864}$$
+
    Görüntü çözünürlüğü ne olursa olsun, **sabit, kompakt ve 864 boyutlu** (16 alt bölge $\times$ 54 bin) yüksek ayrıştırıcılıkta bir öznitelik vektörü üretilir.
 
 - **Kod Karşılığı:** `skimage.feature.local_binary_pattern` aracılığıyla `src/features.py -> extract_lbp_features(images)`
@@ -257,7 +279,9 @@ Farklı görsel nitelikleri temsil eden 3 saygın veri kümesi kullanılmıştı
 - Alex Krizhevsky, Vinod Nair ve Geoffrey Hinton tarafından derlenmiştir.
 - 10 sınıf içerir: *uçak, otomobil, kuş, kedi, geyik, köpek, kurbağa, at, gemi, kamyon*.
 - ITU-R 601-2 parlaklık ağırlıklarıyla gri tona dönüştürülmüştür:
+
   $$Y = 0.299 \cdot R + 0.587 \cdot G + 0.114 \cdot B$$
+
 - Kamera açısı çeşitliliği, arka plan karmaşası ve yüksek sınıf içi varyasyon barındırır.
 
 ### 4.3 KTH-TIPS (Doku / Yüzey Odaklı)
