@@ -14,7 +14,7 @@
 [![English Documentation](https://img.shields.io/badge/🇬🇧%20English%20Documentation-Click%20here%20to%20read-1D3557?style=for-the-badge&logo=readme&logoColor=white)](README.md)
 
 <p align="center">
-  <b>Yazar:</b> Ersin Sandal &nbsp;|&nbsp; <b>Akademik Bağlam:</b> Lisans Bilgisayarlı Görme (Computer Vision) Dersi Projesi
+  <b>Yazar:</b> Ersin Sandal &nbsp;|&nbsp; <b>Bilgisayar Mühendisi</b>
 </p>
 
 ---
@@ -562,7 +562,7 @@ Bu komut otomatik olarak:
 ## 12. Akademik Atıf ve Lisans
 
 ### Müelliflik Bilgisi
-Bu proje ve projeye ait tüm algoritmik geliştirmeler, deney tasarımları ve analizler, Lisans Bilgisayarlı Görme (Computer Vision) dersi kapsamında **Ersin Sandal** tarafından bireysel olarak gerçekleştirilmiştir.
+Bu proje ve projeye ait tüm algoritmik geliştirmeler, deney tasarımları ve analizler **Ersin Sandal (Bilgisayar Mühendisi)** tarafından bireysel olarak gerçekleştirilmiştir.
 
 ### Lisans
 Bu proje **MIT Lisansı** ile lisanslanmıştır - ayrıntılar için [LICENSE](LICENSE) dosyasına göz atabilirsiniz.

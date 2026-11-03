@@ -14,7 +14,7 @@
 [![Türkçe Dokümantasyon](https://img.shields.io/badge/🇹🇷%20Türkçe%20Dokümantasyon-Okumak%20için%20tıklayınız-E63946?style=for-the-badge&logo=readme&logoColor=white)](README_TR.md)
 
 <p align="center">
-  <b>Author:</b> Ersin Sandal &nbsp;|&nbsp; <b>Academic Context:</b> Undergraduate Computer Vision Course Project
+  <b>Author:</b> Ersin Sandal &nbsp;|&nbsp; <b>Computer Engineer</b>
 </p>
 
 ---
@@ -569,7 +569,7 @@ This will automatically:
 ## 12. Academic Citation & License
 
 ### Author Attribution
-This project and all associated code, experimental architectures, and evaluations were solely designed and implemented by **Ersin Sandal** for the Undergraduate Computer Vision course curriculum.
+This project and all associated code, experimental architectures, and evaluations were solely designed and implemented by **Ersin Sandal (Computer Engineer)**.
 
 ### License
 This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
